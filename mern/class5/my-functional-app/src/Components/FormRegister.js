@@ -3,13 +3,9 @@ import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 import styles from './FormRegister.module.css';
 
-const FormRegister = () => {
-    const [user, setUser] = useState({
-        userName: '',
-        email: '',
-        id: '',
-        password: ''
-    })
+const FormRegister = (props) => {
+
+    const { user, setUser } = props;
 
     useEffect(() => {
         console.log("🚀 ~ file: FormRegister.js:17 ~ FormRegister ~ user", user)
