@@ -1,0 +1,13 @@
+.home-container {
+    h3 {
+        color: pink;
+    }
+
+    .info-container {
+        display: flex;
+
+        div {
+            width: 50%;
+        }
+    }
+}
