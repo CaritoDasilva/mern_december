@@ -5,12 +5,20 @@
 // DELETE => Elimina un registro.
 const axios = require('axios');
 
-export const getListCharacters = async () => {
+export const getListCharacters = async (id) => {
     try {
-        const characters = await axios.get('https://rickandmortyapi.com/api/character');
-
-        // const characters = await axios.get('https://rickandmortyapi.com/api/character');
-        return characters;
+        let url = ''
+        if(typeof id === 'undefined'){
+            url = 'https://rickandmortyapi.com/api/character';
+        }else{
+            url = 'https://rickandmortyapi.com/api/character/' + id;
+        }
+        const characters = await axios.get(url);
+        if(typeof id === 'undefined'){
+            return characters.data.results;
+        }else{
+            return [characters.data];
+        }
     } catch(error) {
         console.log("🚀 ~ file: character.js:12 ~ getListCharacters ~ error", error)
         return error;
