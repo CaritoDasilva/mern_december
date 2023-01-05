@@ -5,7 +5,7 @@
 // DELETE => Elimina un registro.
 import axios from 'axios';
 
-export const getListCharacters = async () => {
+export const getListCharacters = async (id) => {
     try {
         const characters = await axios.get('https://rickandmortyapi.com/api/character');
         return characters;
