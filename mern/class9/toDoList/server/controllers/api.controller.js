@@ -4,7 +4,8 @@ const toDoList = [
         status: 'Pendiente'
     },
     {
-        title: 'Subir ejercicios a la plataforma'
+        title: 'Subir ejercicios a la plataforma',
+        status: 'Pendiente'
     }
 ]
 
@@ -39,5 +40,21 @@ module.exports.deleteTodo = (req, res) => {
     res.json({
         message: "Se ha borrado la tarea exitosamente",
         list: toDoList
+    })
+}
+
+module.exports.showFullToDoList = (req, res) => {
+    const { body, params } = req;
+    console.log(body, params);
+    res.json({
+        list: toDoList
+    })
+}
+
+module.exports.showTask = (req, res) => {
+    const { body, params } = req;
+    console.log("🚀 ~ file: api.controller.js:25 ~ body", body)
+    res.json({
+        list: toDoList[params.id]
     })
 }
