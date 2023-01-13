@@ -6,6 +6,8 @@ app.use(express.json());
 
 app.use(express.urlencoded({extended: true}));
 
+require('./server/config/mongoose.config');
+
 const apiRoutes = require('./server/routes/api.routes');
 
 apiRoutes(app);
