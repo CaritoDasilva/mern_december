@@ -1,10 +1,35 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Formik, Form, Field } from 'formik';
 import * as Yup from 'yup';
 import styles from './FormMenu.module.scss';
-import { createNewMenu } from '../../services/menu-service';
+import { createNewMenu, getOneMenu, updateOneMenu } from '../../services/menu-service';
+import Button from 'react-bootstrap/Button';
+import { useNavigate, useParams } from "react-router-dom";
 
 const FormMenu = () => {
+    const navigate = useNavigate();
+    const { id } = useParams();
+    const [menu, setMenu] = useState({
+        title: '',
+        description: '',
+        calories: '',
+        price: 1
+    });
+
+    const getOneMenuFromsService = async () => {
+        try {
+            const editMenu = await getOneMenu(id);
+            setMenu(editMenu.data.menu)
+            
+        } catch (error) {
+            console.log("🚀 ~ file: FormMenu.js:25 ~ getOneMenuFromsService ~ error", error)
+            
+        }
+    }
+
+    useEffect(() => {
+        id && getOneMenuFromsService();
+    }, [id])
 
     const menuSchema = Yup.object().shape({
         title: Yup.string()
@@ -13,7 +38,6 @@ const FormMenu = () => {
             .required('Debe ingresar un título de menu'),
         description: Yup.string()
             .min(2, 'Too Short!')
-            .max(50, 'Too Long!')
             .required('Debe ingresar una de menu'),
         calories: Yup.number(),
         price: Yup.number()
@@ -23,8 +47,8 @@ const FormMenu = () => {
 
         const sendNewMenu = async (values) => {
             try {
-                const response = await createNewMenu(values);
-                console.log("🚀 ~ file: FormMenu.js:27 ~ sendNewMenu ~ response", response)
+                id ? await updateOneMenu(id, values) : await createNewMenu(values);
+                navigate("/");
             } catch (error) {
                 console.log("🚀 ~ file: FormMenu.js:28 ~ sendNewMenu ~ error", error)
                 
@@ -33,14 +57,12 @@ const FormMenu = () => {
 
     return (
         <div className={styles['form-container']}>
+            <Button onClick={() => navigate("/")} variant="info">Volver</Button>
+
             <h1>Agregar Nuevo Menu</h1>
             <Formik
-                initialValues={{
-                    title: '',
-                    description: '',
-                    calories: '',
-                    price: 1
-                }}
+                enableReinitialize
+                initialValues={menu}
                 validationSchema={menuSchema}
                 onSubmit={sendNewMenu}
             >

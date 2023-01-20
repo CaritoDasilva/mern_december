@@ -37,7 +37,7 @@ module.exports.updateMenu = async (req, res) => {
     try {
         const { params, body } = req;
         const { id } = params;
-        const updatedMenu = await Menu.findByIdAndUpdate(id, body, { new: true });
+        const updatedMenu = await Menu.findByIdAndUpdate(id, body.menu, { new: true });
         res.json({
             message: 'Se actualiza de manera exitosa la receta',
             updatedMenu,
@@ -59,6 +59,22 @@ module.exports.removeMenu = async (req, res) => {
             message: 'Se actualiza de manera exitosa la receta',
             deletedMenu,
         });
+    } catch (error) {
+        res.status(500).json({
+            message: 'Ups! no hemos podido hacer lo que nos solicitaste',
+            error,
+        });
+    }
+}
+
+module.exports.getOneMenu = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const menu = await Menu.findById(id);
+        res.json({
+            message: 'Se trae de manera exitosa el menu',
+            menu,
+        })
     } catch (error) {
         res.status(500).json({
             message: 'Ups! no hemos podido hacer lo que nos solicitaste',
