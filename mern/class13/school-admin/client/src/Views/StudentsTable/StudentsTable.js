@@ -38,7 +38,8 @@ const StudentsTable = () => {
     return (
         <div className={styles["table-container"]}>
             <h1>Estudiantes</h1>
-            <Button variant="info" onClick={() => navigate("/crear-estudiante")} >Nuevo estudiante</Button>
+            {/* <Button variant="info" onClick={() => navigate("/crear-estudiante")} >Nuevo estudiante</Button> */}
+             <Button variant="info" onClick={() => navigate("/nuevo-estudiante")} >Nuevo estudiante</Button>
             <Table className={styles["table-students"]} striped bordered hover variant="dark">
                 <thead>
                     <tr>
