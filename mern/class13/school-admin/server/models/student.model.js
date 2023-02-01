@@ -1,5 +1,6 @@
 const { Schema, model } = require('mongoose');
 var uniqueValidator = require('mongoose-unique-validator');
+const bcrypt = require('bcrypt');
 
 const studentSchema = new Schema({
     fullName: {
@@ -29,9 +30,33 @@ const studentSchema = new Schema({
     // To DO: Anidar objetos de otro schema
     grades: {
         type: Number
+    },
+    password: {
+        type: String,
+        required: [true, "Password is required"],
+        minlength: [8, "Password must be 8 characters or longer"]
     }
 
 }, { timestamps: true });
+
+studentSchema.virtual('confirmPassword')
+  .get( () => this._confirmPassword )
+  .set( value => this._confirmPassword = value );
+
+studentSchema.pre('validate', function(next) {
+  if (this.password !== this.confirmPassword) {
+    this.invalidate('confirmPassword', 'Contraseñas deben coincidir');
+  }
+  next();
+});
+
+studentSchema.pre('save', function(next) {
+  bcrypt.hash(this.password, 10)
+    .then(hash => {
+      this.password = hash;
+      next();
+    });
+});
 
 studentSchema.plugin(uniqueValidator, { message: '{PATH} ya existe, favor intentar con uno nuevo' });
 

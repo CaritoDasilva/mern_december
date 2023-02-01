@@ -1,4 +1,7 @@
 const Student = require("../models/student.model");
+const jwt = require("jsonwebtoken");
+const bcrypt = require('bcrypt');
+const secretKey = 'secretito';
 
 module.exports.getAllStudents = async (req, res) => {
     try {
@@ -18,7 +21,7 @@ module.exports.getAllStudents = async (req, res) => {
 
 module.exports.createStudent = async (req, res) => {
     try {
-        const newStudent = await Student.create(req.body.student);
+        const newStudent = await Student.create(req.body);
         res.json({
             message: 'Se crea de manera exitosa el estudiante nuevo',
             newStudent,
@@ -79,5 +82,34 @@ module.exports.getOneStudent = async (req, res) => {
             message: 'Ups! no hemos podido hacer lo que nos solicitaste',
             error,
         });
+    }
+}
+
+module.exports.login = async (req, res) => {
+    try {
+        const { email, password } = req.body;
+        const student = await Student.findOne({ email: email });
+        if (!student) {
+            return res.status(403).json({ message: 'Usuario no existe!' });
+        } else {
+            const isValidPassword = await bcrypt.compare(password, student.password);
+            if (isValidPassword) {
+                const newJWT = jwt.sign({
+                    _id: student._id
+                }, secretKey);
+                
+                return res
+                    .cookie('usertoken', newJWT, secretKey, { httpOnly: true })
+                    .json({ message: 'Se ha logueado exitosamente' })
+
+            } else {
+                return res.status(403).json({ message: 'Credenciales inválidas!' });
+
+            }
+        }
+    } catch (error) {
+        console.log("🚀 ~ file: students.controllers.js:111 ~ module.exports.login= ~ error", error)
+        return res.status(403).json({ msg: "Credenciales inválidas2" })
+
     }
 }
